@@ -5,10 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>สมุดสุขภาพสัตว์เลี้ยง</title>
 <link rel="apple-touch-icon" href="https://pitchayaninjen.github.io/pet-record/apple-touch-icon.png">
-<link rel="icon" type="image/png" href="https://pitchayaninjen.github.io/pet-record/apple-touch-icon.png">
-<meta name="theme-color" content="#182620">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -380,7 +376,7 @@
 ========================================================= */
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzNCxBIlRNxAFUgKl-9PPQF3JEIBUzwYVMpau3SnlJJkenvBeBn24QJvdPwioNeFtR2Kw/exec'; 
 
-const STORE_KEY = 'petRecordApp_cat_v1';
+const STORE_KEY = 'petRecordApp_v1';
 
 function uid() {
   if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
@@ -457,9 +453,9 @@ async function fetchCloudData() {
 }
 
 /* =========================================================
-   Direct Add to Calendar via Google Apps Script
+   Direct Add to Groot Calendar via Google Apps Script
 ========================================================= */
-async function addEventToCalendar(appt) {
+async function addEventToGrootCalendar(appt) {
   try {
     await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
@@ -825,16 +821,16 @@ function bindVaxForm(pet) {
     });
     saveData(); renderAll(); showToast('บันทึกแล้ว');
 
-    // ถ้ามีกำหนดนัดหมายครั้งถัดไป ให้ส่งไป Calendar อัตโนมัติทันที
+    // ถ้ามีกำหนดนัดหมายครั้งถัดไป ให้ส่งไปปฏิทิน Groot อัตโนมัติทันที
     if (nextDue) {
-      addEventToCalendar({
+      addEventToGrootCalendar({
         title: typeMeta(fd.get('type')).apptPrefix + fd.get('name') + ' (' + pet.name + ')',
         date: nextDue,
         time: '',
         note: fd.get('note') || '',
         location: ''
       });
-      showToast('บันทึกและเพิ่มเข้าปฏิทินอัตโนมัติแล้ว');
+      showToast('บันทึกและเพิ่มเข้าปฏิทิน Groot อัตโนมัติแล้ว');
     }
   });
 }
@@ -872,7 +868,7 @@ function renderApptBlock(pet) {
           <div class="s">${fmtDateTH(a.date)}${a.time ? ' · ' + a.time + ' น.' : ''}${a.location ? ' · ' + escapeHtml(a.location) : ''}</div>
         </div>
         <div class="appt-actions">
-          <button class="cal-btn" data-cal-appt="${a.id}">+ เพิ่มลง Calendar</button>
+          <button class="cal-btn" data-cal-appt="${a.id}">+ เพิ่มเข้า Groot</button>
           ${a.source === 'custom' ? `<button class="del-btn" data-del-appt="${a.id}" style="padding:0;">ลบ</button>` : ''}
         </div>
       </div>`;
@@ -891,7 +887,7 @@ function renderApptBlock(pet) {
     btn.addEventListener('click', async () => {
       btn.disabled = true;
       btn.textContent = 'กำลังเพิ่ม...';
-      const ok = await addEventToCalendar({
+      const ok = await addEventToGrootCalendar({
         title: appt.title + ' (' + pet.name + ')',
         date: appt.date,
         time: appt.time || '',
@@ -899,12 +895,12 @@ function renderApptBlock(pet) {
         note: appt.note || ''
       });
       if (ok) {
-        btn.textContent = '✓ เพิ่มสำเร็จ';
+        btn.textContent = '✓ เพิ่มใน Groot แล้ว';
         btn.classList.add('added');
-        showToast('เพิ่มเข้าปฏิทินสำเร็จ');
+        showToast('เพิ่มเข้าปฏิทิน Groot สำเร็จ');
       } else {
         btn.disabled = false;
-        btn.textContent = '+ เพิ่มลง Calendar';
+        btn.textContent = '+ เพิ่มเข้า Groot';
         showToast('เพิ่มไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
       }
     });
@@ -930,7 +926,7 @@ function apptFormHtml() {
       <div><label>บันทึกเพิ่มเติม</label><input type="text" name="note"></div>
       <div style="display:flex;align-items:center;gap:8px;margin:4px 0;">
         <input type="checkbox" id="autoCalCheck" name="autoCal" checked style="width:auto;margin:0;">
-        <label for="autoCalCheck" style="margin:0;cursor:pointer;font-size:13px;color:var(--ink);">เพิ่มลง Google Calendar อัตโนมัติ</label>
+        <label for="autoCalCheck" style="margin:0;cursor:pointer;font-size:13px;color:var(--ink);">เพิ่มลง Google Calendar (Groot) อัตโนมัติ</label>
       </div>
       <div class="form-actions"><button type="submit" class="btn btn-primary">บันทึก</button></div>
     </form>`;
@@ -949,14 +945,14 @@ function bindApptForm(pet) {
     saveData(); renderAll(); showToast('เพิ่มนัดหมายแล้ว');
 
     if (fd.get('autoCal')) {
-      addEventToCalendar({
+      addEventToGrootCalendar({
         title: newAppt.title + ' (' + pet.name + ')',
         date: newAppt.date,
         time: newAppt.time,
         location: newAppt.location,
         note: newAppt.note
       });
-      showToast('เพิ่มนัดหมายลงปฏิทินอัตโนมัติแล้ว');
+      showToast('เพิ่มนัดหมายลงปฏิทิน Groot อัตโนมัติแล้ว');
     }
   });
 }
