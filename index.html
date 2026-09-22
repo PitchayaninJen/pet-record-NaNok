@@ -830,7 +830,7 @@ function bindVaxForm(pet) {
         note: fd.get('note') || '',
         location: ''
       });
-      showToast('บันทึกและเพิ่มเข้าปฏิทิน Groot อัตโนมัติแล้ว');
+      showToast('บันทึกและเพิ่มเข้าปฏิทินอัตโนมัติแล้ว');
     }
   });
 }
@@ -868,7 +868,7 @@ function renderApptBlock(pet) {
           <div class="s">${fmtDateTH(a.date)}${a.time ? ' · ' + a.time + ' น.' : ''}${a.location ? ' · ' + escapeHtml(a.location) : ''}</div>
         </div>
         <div class="appt-actions">
-          <button class="cal-btn" data-cal-appt="${a.id}">+ เพิ่มเข้า Groot</button>
+          <button class="cal-btn" data-cal-appt="${a.id}">+ เพิ่มเข้า Calendar</button>
           ${a.source === 'custom' ? `<button class="del-btn" data-del-appt="${a.id}" style="padding:0;">ลบ</button>` : ''}
         </div>
       </div>`;
@@ -895,12 +895,12 @@ function renderApptBlock(pet) {
         note: appt.note || ''
       });
       if (ok) {
-        btn.textContent = '✓ เพิ่มใน Groot แล้ว';
+        btn.textContent = '✓ เพิ่มใน Calendar แล้ว';
         btn.classList.add('added');
-        showToast('เพิ่มเข้าปฏิทิน Groot สำเร็จ');
+        showToast('เพิ่มเข้าปฏิทินสำเร็จ');
       } else {
         btn.disabled = false;
-        btn.textContent = '+ เพิ่มเข้า Groot';
+        btn.textContent = '+ เพิ่มเข้า Calendar';
         showToast('เพิ่มไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
       }
     });
@@ -926,7 +926,7 @@ function apptFormHtml() {
       <div><label>บันทึกเพิ่มเติม</label><input type="text" name="note"></div>
       <div style="display:flex;align-items:center;gap:8px;margin:4px 0;">
         <input type="checkbox" id="autoCalCheck" name="autoCal" checked style="width:auto;margin:0;">
-        <label for="autoCalCheck" style="margin:0;cursor:pointer;font-size:13px;color:var(--ink);">เพิ่มลง Google Calendar (Groot) อัตโนมัติ</label>
+        <label for="autoCalCheck" style="margin:0;cursor:pointer;font-size:13px;color:var(--ink);">เพิ่มลง Google Calendar อัตโนมัติ</label>
       </div>
       <div class="form-actions"><button type="submit" class="btn btn-primary">บันทึก</button></div>
     </form>`;
